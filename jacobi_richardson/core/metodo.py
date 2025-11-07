@@ -2,19 +2,50 @@ from typing import List
 
 import numpy as np
 from numpy import float64
+from numpy.linalg import det
 from numpy.typing import NDArray
 
-from .exceptions import MatrizInvalidaError
+from .exceptions import MatrizInvalidaError, SistemaImpossivelError, SistemaIndeterminadoError
 
 ### PARÂMETROS ############################################################
 
-_TOLERANCIA: float = 0.005
+_TOLERANCIA: float = 0.01
 
 ### VARIÁVEIS GLOBAIS #####################################################
 
 _ultimo_numero_iteracoes: int
 
 ###########################################################################
+
+def _obter_determinantes_incognitas(matriz: NDArray[float64],
+                                    vetor_b: NDArray[float64]) -> List[float]:
+    
+    lista_determinantes: List[float] = []
+
+    n = matriz.shape[0]
+
+    for i in range(n):
+        matriz_aux = matriz.copy()
+        matriz_aux[:,i] = vetor_b
+        determinante = det(matriz_aux)
+        lista_determinantes.append(determinante)
+
+    return lista_determinantes
+
+def _checar_sistema(matriz: NDArray[float64],
+                    vetor_b: NDArray[float64]):
+
+    d = det(matriz)
+
+    lista_dets_incognitas = _obter_determinantes_incognitas(matriz, vetor_b)
+
+    dets_incognitas_nulas = [d_ic == 0 for d_ic in lista_dets_incognitas]
+
+    if d == 0 and all(dets_incognitas_nulas):
+        raise SistemaIndeterminadoError()
+
+    if d == 0:
+        raise SistemaImpossivelError()
 
 
 def _validar_matriz_jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64]) -> None:
@@ -29,7 +60,10 @@ def _validar_matriz_jacobi_richardson(matriz: List[float] | List[List[float]] | 
 def _proxima_iteracao_jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64],
                                    vetor_b: List[float] | List[List[float]] | NDArray[float64],
                                    vetor_x: List[float] | List[List[float]] | NDArray[float64]) -> NDArray[float64]:
-    
+    matriz = np.array(matriz)
+    vetor_b = np.array(vetor_b)
+    vetor_x = np.array(vetor_x)
+
     _validar_matriz_jacobi_richardson(matriz)
 
     n = matriz.shape[0]
@@ -67,6 +101,8 @@ def obter_ultimo_numero_iteracoes() -> int:
 
 def jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64],
                  vetor_b: List[float] | List[List[float]] | NDArray[float64]) -> NDArray[float64]:
+
+    _checar_sistema(matriz, vetor_b)
 
     global _ultimo_numero_iteracoes
 

@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import float64
 from numpy.typing import NDArray
 
 from core.exceptions import OrdemInvalidaError
@@ -27,7 +28,7 @@ def obter_ordem() -> int:
         except OrdemInvalidaError as e:
             print(f'Ordem inválida: "{e}"!\n')
 
-def obter_matriz_m() -> NDArray:
+def obter_matriz_m() -> NDArray[float64]:
     ordem = n
 
     m_local = np.empty((ordem,ordem))
@@ -40,7 +41,7 @@ def obter_matriz_m() -> NDArray:
               valor_input = input(f"Digite o valor de m{i+1}{j+1}: ")
   
               try:
-                  m_local[i,j] = int(valor_input)
+                  m_local[i,j] = float(valor_input)
                   break
   
               except ValueError as e:
@@ -48,7 +49,7 @@ def obter_matriz_m() -> NDArray:
     
     return m_local
 
-def obter_vetor_b() -> NDArray:
+def obter_vetor_b() -> NDArray[float64]:
     ordem = n
 
     b_local = np.empty(ordem)
@@ -60,7 +61,7 @@ def obter_vetor_b() -> NDArray:
             valor_input = input(f"Digite o {i+1}º elemento de b: ")
 
             try:
-                b_local[i] = int(valor_input)
+                b_local[i] = float(valor_input)
                 break
 
             except ValueError as e:
@@ -70,17 +71,29 @@ def obter_vetor_b() -> NDArray:
 
 
 if __name__ == "__main__":
-    n = obter_ordem()
+    print("Programa iniciado!")
+    while True:
+        try:
+            print("\n(pressione Ctrl + C para encerrar o programa)\n")
 
-    m = obter_matriz_m()
+            n = obter_ordem()
 
-    b = obter_vetor_b()
+            m = obter_matriz_m()
 
-    x = jacobi_richardson(m, b)
+            b = obter_vetor_b()
 
-    k = obter_ultimo_numero_iteracoes()
+            x = jacobi_richardson(m, b)
 
-    print('\nRESULTADO')
+            k = obter_ultimo_numero_iteracoes()
 
-    print('Vetor solução: ', x)
-    print('Número de iterações: ', k)
+            print('\nRESULTADO')
+
+            print('Vetor solução: ', x)
+            print('Número de iterações: ', k)
+
+        except KeyboardInterrupt:
+            print("\n\nFim do programa!")
+            break
+
+        except Exception as e:
+            print("\nErro: ", e)
