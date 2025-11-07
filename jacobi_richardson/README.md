@@ -11,4 +11,3 @@
     - `python3 main.py` (Linux/MacOS)
 
 > Código-fonte disponível no GitHub em: https://github.com/felipeteixeiradelima/spocanu-calculo-numerico/tree/main/jacobi_richardson
-> 
