@@ -2,6 +2,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from core.exceptions import OrdemInvalidaError
+from core.metodo import jacobi_richardson, obter_ultimo_numero_iteracoes
 
 n: int          # Ordem da matriz M
 m: NDArray      # Matriz M
@@ -74,3 +75,12 @@ if __name__ == "__main__":
     m = obter_matriz_m()
 
     b = obter_vetor_b()
+
+    x = jacobi_richardson(m, b)
+
+    k = obter_ultimo_numero_iteracoes()
+
+    print('\nRESULTADO')
+
+    print('Vetor solução: ', x)
+    print('Número de iterações: ', k)

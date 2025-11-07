@@ -8,9 +8,14 @@ from .exceptions import MatrizInvalidaError
 
 ### PARÂMETROS ############################################################
 
-_TOLERANCIA: float = 0.01
+_TOLERANCIA: float = 0.005
+
+### VARIÁVEIS GLOBAIS #####################################################
+
+_ultimo_numero_iteracoes: int
 
 ###########################################################################
+
 
 def _validar_matriz_jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64]) -> None:
     matriz = np.array(matriz)
@@ -56,8 +61,16 @@ def _calcular_diferenca_relativa_jacobi_richardson(vetor_x: List[float] | List[L
 
     return dividendo/divisor
 
+def obter_ultimo_numero_iteracoes() -> int:
+
+    return _ultimo_numero_iteracoes
+
 def jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64],
                  vetor_b: List[float] | List[List[float]] | NDArray[float64]) -> NDArray[float64]:
+
+    global _ultimo_numero_iteracoes
+
+    _ultimo_numero_iteracoes = 0
 
     matriz = np.array(matriz)
     vetor_b = np.array(vetor_b)
@@ -75,6 +88,8 @@ def jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64]
         diferenca_relativa = _calcular_diferenca_relativa_jacobi_richardson(vetor_x, novo_vetor_x)
 
         vetor_x = novo_vetor_x
+
+        _ultimo_numero_iteracoes+=1
 
     return novo_vetor_x
 
