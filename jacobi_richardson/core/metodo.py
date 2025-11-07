@@ -4,7 +4,7 @@ import numpy as np
 from numpy import float64
 from numpy.typing import NDArray
 
-from exceptions import MatrizInvalidaError
+from .exceptions import MatrizInvalidaError
 
 ### PARÂMETROS ############################################################
 
