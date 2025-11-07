@@ -1,3 +1,4 @@
+import warnings
 from typing import List
 
 import numpy as np
@@ -118,16 +119,27 @@ def jacobi_richardson(matriz: List[float] | List[List[float]] | NDArray[float64]
 
     vetor_x = np.zeros(n)
 
-    while diferenca_relativa >= tolerancia:
-        novo_vetor_x = _proxima_iteracao_jacobi_richardson(matriz, vetor_b, vetor_x)
+    with warnings.catch_warnings():
 
-        diferenca_relativa = _calcular_diferenca_relativa_jacobi_richardson(vetor_x, novo_vetor_x)
+        warnings.filterwarnings('error', category=RuntimeWarning)
 
-        vetor_x = novo_vetor_x
+        try:
 
-        _ultimo_numero_iteracoes+=1
+            while diferenca_relativa >= tolerancia:
+                novo_vetor_x = _proxima_iteracao_jacobi_richardson(matriz, vetor_b, vetor_x)
 
-    return novo_vetor_x
+                diferenca_relativa = _calcular_diferenca_relativa_jacobi_richardson(vetor_x, novo_vetor_x)
+
+                vetor_x = novo_vetor_x
+
+                _ultimo_numero_iteracoes+=1
+
+            return novo_vetor_x
+
+        except RuntimeWarning as w:
+            print("\nAviso: interrupção da iteração devido a underflow/overflow!")
+
+            return vetor_x
 
 
 if __name__ == "__main__":
