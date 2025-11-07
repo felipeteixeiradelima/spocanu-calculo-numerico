@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.typing import NDArray
 
-from exceptions import OrdemInvalidaError
+from core.exceptions import OrdemInvalidaError
 
 n: int          # Ordem da matriz M
 m: NDArray      # Matriz M
